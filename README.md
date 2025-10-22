@@ -92,3 +92,14 @@ Create a README.md with:
     Overview of features and known issues
 Ensure all code is pushed to GitHub.
 
+Submission and Grading Criteria
+    Submit a public GitHub repo that includes:
+        Complete source code
+        Data files (JSON or CSV)
+        A README.md with clear instructions
+        Requirements.txt file with dependencies
+        Test files, if applicable
+Review the rubric below as a guide for how this lab will be graded.
+Complete your assignment using your preferred IDE.
+When you are ready, push your final script to GitHub.
+Share the link to your GitHub repo below and submit your assignment.
