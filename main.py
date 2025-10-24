@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+# filepath: /home/michaelmcc/Development/code/course_7/summative-lab-Python-Project-Management-CLI-Tool/main.py
+import argparse
+import sys
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+from models.Classes import User, Project, Task, save_to_json, load_from_json
+
+console = Console()
+
+def display_users():
+    """Display users in a rich table."""
+    if not User.all_users:
+        console.print("[yellow]No users found.[/yellow]")
+        return
+    
+    table = Table(title="Users")
+    table.add_column("ID", style="cyan", no_wrap=True)
+    table.add_column("Name", style="magenta")
+    table.add_column("Email", style="green")
+    
+    for user in User.all_users:
+        table.add_row(user.id, user.name, user.email)
+    
+    console.print(table)
+
+def display_projects():
+    """Display projects in a rich table."""
+    if not Project.all_projects:
+        console.print("[yellow]No projects found.[/yellow]")
+        return
+    
+    table = Table(title="Projects")
+    table.add_column("ID", style="cyan", no_wrap=True)
+    table.add_column("Title", style="magenta")
+    table.add_column("Description", style="white")
+    table.add_column("Due Date", style="green")
+    
+    for project in Project.all_projects:
+        table.add_row(project.id, project.title, project.description, project.due_date)
+    
+    console.print(table)
+
+def display_tasks():
+    """Display tasks in a rich table."""
+    if not Task.all_tasks:
+        console.print("[yellow]No tasks found.[/yellow]")
+        return
+    
+    table = Table(title="Tasks")
+    table.add_column("ID", style="cyan", no_wrap=True)
+    table.add_column("Title", style="magenta")
+    table.add_column("Status", style="white")
+    table.add_column("Assigned To", style="blue")
+    table.add_column("Project", style="green")
+    
+    for task in Task.all_tasks:
+        # Get status color
+        status_color = "green" if task.status == "completed" else "yellow" if task.status == "in_progress" else "red"
+        status_text = f"[{status_color}]{task.status}[/{status_color}]"
+        
+        table.add_row(
+            task.id, 
+            task.title, 
+            status_text,
+            task.assigned_to_id or "Unassigned",
+            task.project_id or "No Project"
+        )
+    
+    console.print(table)
+
+def main():
+    load_from_json()
+    
+    parser = argparse.ArgumentParser(
+        description='Project Management CLI Tool',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    
+    # User commands
+    user_parser = subparsers.add_parser('user', help='User management')
+    user_subparsers = user_parser.add_subparsers(dest='user_action')
+    
+    # Create user
+    add_user = user_subparsers.add_parser('create', help='Add a new user')
+    add_user.add_argument('name', help='User name')
+    add_user.add_argument('email', help='User email')
+
+    # List users
+    user_subparsers.add_parser('list', help='List all users')
+    
+    # Project commands
+    project_parser = subparsers.add_parser('project', help='Project management')
+    project_subparsers = project_parser.add_subparsers(dest='project_action')
+    
+    # Create project
+    add_project = project_subparsers.add_parser('create', help='Add a new project')
+    add_project.add_argument('title', help='Project title')
+    add_project.add_argument('description', help='Project description')
+    add_project.add_argument('due_date', help='Due date (YYYY-MM-DD)')
+
+    # List projects
+    project_subparsers.add_parser('list', help='List all projects')
+    
+    # Task commands
+    task_parser = subparsers.add_parser('task', help='Task management')
+    task_subparsers = task_parser.add_subparsers(dest='task_action')
+    
+    # Create task
+    add_task = task_subparsers.add_parser('create', help='Add a new task')
+    add_task.add_argument('title', help='Task title')
+    add_task.add_argument('--status', default='todo', help='Task status')
+    add_task.add_argument('--assigned-to', help='User ID to assign task to')
+    add_task.add_argument('--project', help='Project ID for the task')
+
+    # List tasks
+    task_subparsers.add_parser('list', help='List all tasks')
+    
+    args = parser.parse_args()
+    
+    # Handle commands
+    if args.command == 'user':
+        if args.user_action == 'create':
+            user = User(args.name, args.email)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Created user: [bold]{user.name}[/bold] ({user.email})\nID: [cyan]{user.id}[/cyan]",
+                title="User Created",
+                border_style="green"
+            ))
+        elif args.user_action == 'list':
+            display_users()
+                
+    elif args.command == 'project':
+        if args.project_action == 'create':
+            project = Project(args.title, args.description, args.due_date)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Created project: [bold]{project.title}[/bold]\nID: [cyan]{project.id}[/cyan]",
+                title="Project Created",
+                border_style="green"
+            ))
+        elif args.project_action == 'list':
+            display_projects()
+                
+    elif args.command == 'task':
+        if args.task_action == 'create':
+            task = Task(args.title, args.status, getattr(args, 'assigned_to', None), args.project)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Created task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
+                title="Task Created",
+                border_style="green"
+            ))
+        elif args.task_action == 'list':
+            display_tasks()
+    else:
+        console.print("[red]No command provided. Use --help for available commands.[/red]")
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()
