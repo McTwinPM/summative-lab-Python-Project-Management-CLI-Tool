@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "user-123",
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-456",
+      "title": "Website Redesign",
+      "description": "Redesign company website",
+      "due_date": "2025-12-01",
+      "user_ids": ["user-123"],
+      "task_ids": ["task-789"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-789",
+      "title": "Create wireframes",
+      "status": "in_progress",
+      "assigned_to_id": "user-123",
+      "project_id": "project-456"
+    }
+  ]
+}

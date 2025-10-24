@@ -38,8 +38,8 @@ class Project:
         self.title = title
         self.description = description
         self.due_date = due_date
-        self.user_ids = []  # Store user IDs instead of user objects
-        self.task_ids = []  # Store task IDs instead of task objects
+        self.user_ids = []  
+        self.task_ids = []  
         Project.all_projects.append(self)
     
     def to_dict(self):
@@ -66,7 +66,7 @@ class Task:
         self.id = task_id or str(uuid.uuid4())
         self.title = title
         self.status = status
-        self.assigned_to_id = assigned_to_id  # Store user ID instead of user object
+        self.assigned_to_id = assigned_to_id 
         self.project_id = project_id
         Task.all_tasks.append(self)
     
@@ -109,7 +109,7 @@ def load_from_json(filename='data/objects.json'):
         Project.all_projects.clear()
         Task.all_tasks.clear()
         
-        # Load users first
+        # Load users
         for user_data in data.get('users', []):
             User.from_dict(user_data)
         
