@@ -29,6 +29,13 @@ class User:
     @property
     def tasks(self):
         return [task for task in Task.all_tasks if task.assigned_to_id == self.id]
+    
+    def __str__(self):
+        return f"{self.name} ({self.email})"
+    
+    def __repr__(self):
+        return f"User(id='{self.id}', name='{self.name}', email='{self.email}')"
+
 
 class Project:
     all_projects = []
@@ -58,6 +65,12 @@ class Project:
         project.user_ids = data.get('user_ids', [])
         project.task_ids = data.get('task_ids', [])
         return project
+    
+    def __str__(self):
+        return f"{self.title} (Due: {self.due_date})"
+    
+    def __repr__(self):
+        return f"Project(id='{self.id}', title='{self.title}', due_date='{self.due_date}')"
 
 class Task:
     all_tasks = []
@@ -88,6 +101,12 @@ class Task:
             data.get('project_id'),
             data['id']
         )
+    
+    def __str__(self):
+        return f"{self.title} [{self.status}]"
+    
+    def __repr__(self):
+        return f"Task(id='{self.id}', title='{self.title}', status='{self.status}')"
 
 # Data persistence functions
 def save_to_json(filename='data/objects.json'):
