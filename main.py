@@ -12,11 +12,11 @@ from utils.helperfunctions import validate_email, validate_date
 console = Console()
 
 def display_users():
-    """Display users in a rich table."""
+    # Display users
     if not User.all_users:
         console.print("[yellow]No users found.[/yellow]")
         return
-    
+    # Rich table for users
     table = Table(title="Users")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Name", style="magenta")
@@ -28,11 +28,11 @@ def display_users():
     console.print(table)
 
 def display_projects():
-    """Display projects in a rich table."""
+    # Display projects
     if not Project.all_projects:
         console.print("[yellow]No projects found.[/yellow]")
         return
-    
+    # Rich table for projects
     table = Table(title="Projects")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title", style="magenta")
@@ -45,11 +45,11 @@ def display_projects():
     console.print(table)
 
 def display_tasks():
-    """Display tasks in a rich table."""
+    # Display tasks
     if not Task.all_tasks:
         console.print("[yellow]No tasks found.[/yellow]")
         return
-    
+    # Rich table for tasks
     table = Table(title="Tasks")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title", style="magenta")
