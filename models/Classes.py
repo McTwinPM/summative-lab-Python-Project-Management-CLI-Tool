@@ -18,6 +18,10 @@ class User:
             'email': self.email
         }
     
+    def remove(self):
+        if self in User.all_users:
+            User.all_users.remove(self)
+
     @classmethod
     def from_dict(cls, data):
         return cls(data['name'], data['email'], data['id'])
@@ -59,6 +63,10 @@ class Project:
             'task_ids': self.task_ids
         }
     
+    def remove(self):
+        if self in Project.all_projects:
+            Project.all_projects.remove(self)
+
     @classmethod
     def from_dict(cls, data):
         project = cls(data['title'], data['description'], data['due_date'], data['id'])
@@ -92,6 +100,21 @@ class Task:
             'project_id': self.project_id
         }
     
+    def remove(self):
+        if self in Task.all_tasks:
+            Task.all_tasks.remove(self)
+
+    def assign_to(self, user):
+        self.assigned_to_id = user.id
+
+    @property
+    def assignee(self):
+        if self.assigned_to_id:
+            for user in User.all_users:
+                if user.id == self.assigned_to_id:
+                    return user
+        return None
+
     @classmethod
     def from_dict(cls, data):
         return cls(

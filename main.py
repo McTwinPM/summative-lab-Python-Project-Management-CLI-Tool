@@ -129,6 +129,16 @@ def main():
     remove_task = task_subparsers.add_parser('remove', help='Remove a task')
     remove_task.add_argument('task_id', help='Task ID to remove')
 
+    # Update task status
+    update_task = task_subparsers.add_parser('update-status', help='Update task status')
+    update_task.add_argument('task_id', help='Task ID to update')
+    update_task.add_argument('status', help='New status for the task')
+
+    # Assign user to task
+    assign_task = task_subparsers.add_parser('assign', help='Assign user to task')
+    assign_task.add_argument('task_id', help='Task ID to assign user to')
+    assign_task.add_argument('user_id', help='User ID to assign to task')
+
     # List tasks
     task_subparsers.add_parser('list', help='List all tasks')
     
@@ -191,7 +201,9 @@ def main():
                 
     elif args.command == 'task':
         if args.task_action == 'add':
-            task = Task(args.title, args.status, getattr(args, 'assigned_to', None), args.project)
+            assigned_to = getattr(args, 'assigned_to', None) 
+            project_id = getattr(args, 'project', None)
+            task = Task(args.title, args.status, assigned_to, project_id)
             if not validate_status(task.status):
                 console.print(f"[red]Invalid task status: {task.status}. Must be one of 'todo', 'in-progress', 'done'.[/red]")
                 sys.exit(1)
@@ -199,6 +211,37 @@ def main():
             console.print(Panel(
                 f"[green]✓[/green] Added task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
                 title="Task Added",
+                border_style="green"
+            ))
+        elif args.task_action == 'update-status':
+            task_to_update = next((t for t in Task.all_tasks if t.id == args.task_id), None)
+            if not task_to_update:
+                console.print(f"[red]Task with ID {args.task_id} not found.[/red]")
+                sys.exit(1)
+            if not validate_status(args.status):
+                console.print(f"[red]Invalid task status: {args.status}. Must be one of 'todo', 'in-progress', 'done'.[/red]")
+                sys.exit(1)
+            task_to_update.status = args.status
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Updated task ID [cyan]{args.task_id}[/cyan] to status: [yellow]{args.status}[/yellow]",
+                title="Task Updated",
+                border_style="green"
+            ))
+        elif args.task_action == 'assign':
+            task_to_assign = next((t for t in Task.all_tasks if t.id == args.task_id), None)
+            if not task_to_assign:
+                console.print(f"[red]Task with ID {args.task_id} not found.[/red]")
+                sys.exit(1)
+            user_to_assign = next((u for u in User.all_users if u.id == args.user_id), None)
+            if not user_to_assign:
+                console.print(f"[red]User with ID {args.user_id} not found.[/red]")
+                sys.exit(1)
+            task_to_assign.assign_to(user_to_assign)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Assigned user ID [cyan]{args.user_id}[/cyan] to task ID [cyan]{args.task_id}[/cyan]",
+                title="Task Assigned",
                 border_style="green"
             ))
         elif args.task_action == 'remove':
