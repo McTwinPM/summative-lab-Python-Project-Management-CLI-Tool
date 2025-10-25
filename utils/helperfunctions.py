@@ -17,3 +17,10 @@ def validate_date(date_str: str) -> bool:
         return True
     except ValueError:
         return False
+def validate_status(status: str) -> bool:
+    """Validate task status."""
+    valid_statuses = {'todo', 'in-progress', 'done'}
+    return status in valid_statuses
+def validate_complete_task(task: Task) -> bool:
+    """Check if a task can be marked as complete."""
+    return task.status == 'done'
