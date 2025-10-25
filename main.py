@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# filepath: /home/michaelmcc/Development/code/course_7/summative-lab-Python-Project-Management-CLI-Tool/main.py
+
 import argparse
 import sys
 from rich.console import Console
@@ -85,7 +85,7 @@ def main():
     user_subparsers = user_parser.add_subparsers(dest='user_action')
     
     # Create user
-    add_user = user_subparsers.add_parser('create', help='Add a new user')
+    add_user = user_subparsers.add_parser('add', help='Add a new user')
     add_user.add_argument('name', help='User name')
     add_user.add_argument('email', help='User email')
 
@@ -97,7 +97,7 @@ def main():
     project_subparsers = project_parser.add_subparsers(dest='project_action')
     
     # Create project
-    add_project = project_subparsers.add_parser('create', help='Add a new project')
+    add_project = project_subparsers.add_parser('add', help='Add a new project')
     add_project.add_argument('title', help='Project title')
     add_project.add_argument('description', help='Project description')
     add_project.add_argument('due_date', help='Due date (YYYY-MM-DD)')
@@ -110,7 +110,7 @@ def main():
     task_subparsers = task_parser.add_subparsers(dest='task_action')
     
     # Create task
-    add_task = task_subparsers.add_parser('create', help='Add a new task')
+    add_task = task_subparsers.add_parser('add', help='Add a new task')
     add_task.add_argument('title', help='Task title')
     add_task.add_argument('--status', default='todo', help='Task status')
     add_task.add_argument('--assigned-to', help='User ID to assign task to')
