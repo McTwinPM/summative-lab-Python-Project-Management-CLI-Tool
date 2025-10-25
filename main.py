@@ -7,15 +7,16 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from models.Classes import User, Project, Task, save_to_json, load_from_json
+from utils.helperfunctions import validate_email, validate_date
 
 console = Console()
 
 def display_users():
-    """Display users in a rich table."""
+    # Display users
     if not User.all_users:
         console.print("[yellow]No users found.[/yellow]")
         return
-    
+    # Rich table for users
     table = Table(title="Users")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Name", style="magenta")
@@ -27,11 +28,11 @@ def display_users():
     console.print(table)
 
 def display_projects():
-    """Display projects in a rich table."""
+    # Display projects
     if not Project.all_projects:
         console.print("[yellow]No projects found.[/yellow]")
         return
-    
+    # Rich table for projects
     table = Table(title="Projects")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title", style="magenta")
@@ -44,11 +45,11 @@ def display_projects():
     console.print(table)
 
 def display_tasks():
-    """Display tasks in a rich table."""
+    # Display tasks
     if not Task.all_tasks:
         console.print("[yellow]No tasks found.[/yellow]")
         return
-    
+    # Rich table for tasks
     table = Table(title="Tasks")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title", style="magenta")
@@ -123,36 +124,42 @@ def main():
     
     # Handle commands
     if args.command == 'user':
-        if args.user_action == 'create':
+        if args.user_action == 'add':
+            if not validate_email(args.email):
+                console.print(f"[red]Invalid email format: {args.email}[/red]")
+                sys.exit(1)
             user = User(args.name, args.email)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Created user: [bold]{user.name}[/bold] ({user.email})\nID: [cyan]{user.id}[/cyan]",
-                title="User Created",
+                f"[green]✓[/green] Added user: [bold]{user.name}[/bold] ({user.email})\nID: [cyan]{user.id}[/cyan]",
+                title="User Added",
                 border_style="green"
             ))
         elif args.user_action == 'list':
             display_users()
                 
     elif args.command == 'project':
-        if args.project_action == 'create':
+        if args.project_action == 'add':
+            if not validate_date(args.due_date):
+                console.print(f"[red]Invalid date format: {args.due_date}. Use YYYY-MM-DD.[/red]")
+                sys.exit(1)
             project = Project(args.title, args.description, args.due_date)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Created project: [bold]{project.title}[/bold]\nID: [cyan]{project.id}[/cyan]",
-                title="Project Created",
+                f"[green]✓[/green] Added project: [bold]{project.title}[/bold]\nID: [cyan]{project.id}[/cyan]",
+                title="Project Added",
                 border_style="green"
             ))
         elif args.project_action == 'list':
             display_projects()
                 
     elif args.command == 'task':
-        if args.task_action == 'create':
+        if args.task_action == 'add':
             task = Task(args.title, args.status, getattr(args, 'assigned_to', None), args.project)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Created task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
-                title="Task Created",
+                f"[green]✓[/green] Added task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
+                title="Task Added",
                 border_style="green"
             ))
         elif args.task_action == 'list':
