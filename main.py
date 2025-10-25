@@ -7,7 +7,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from models.Classes import User, Project, Task, save_to_json, load_from_json
-from utils.helperfunctions import validate_email, validate_date
+from utils.helperfunctions import validate_email, validate_date, validate_status, validate_complete_task
 
 console = Console()
 
@@ -90,6 +90,10 @@ def main():
     add_user.add_argument('name', help='User name')
     add_user.add_argument('email', help='User email')
 
+    # Remove user
+    remove_user = user_subparsers.add_parser('remove', help='Remove a user')
+    remove_user.add_argument('user_id', help='User ID to remove')
+
     # List users
     user_subparsers.add_parser('list', help='List all users')
     
@@ -102,6 +106,10 @@ def main():
     add_project.add_argument('title', help='Project title')
     add_project.add_argument('description', help='Project description')
     add_project.add_argument('due_date', help='Due date (YYYY-MM-DD)')
+
+    # Remove project
+    remove_project = project_subparsers.add_parser('remove', help='Remove a project')
+    remove_project.add_argument('project_id', help='Project ID to remove')
 
     # List projects
     project_subparsers.add_parser('list', help='List all projects')
@@ -116,6 +124,10 @@ def main():
     add_task.add_argument('--status', default='todo', help='Task status')
     add_task.add_argument('--assigned-to', help='User ID to assign task to')
     add_task.add_argument('--project', help='Project ID for the task')
+
+    # Remove task
+    remove_task = task_subparsers.add_parser('remove', help='Remove a task')
+    remove_task.add_argument('task_id', help='Task ID to remove')
 
     # List tasks
     task_subparsers.add_parser('list', help='List all tasks')
@@ -135,6 +147,18 @@ def main():
                 title="User Added",
                 border_style="green"
             ))
+        elif args.user_action == 'remove':
+            user_to_remove = next((u for u in User.all_users if u.id == args.user_id), None)
+            if not user_to_remove:
+                console.print(f"[red]User with ID {args.user_id} not found.[/red]")
+                sys.exit(1)
+            User.all_users.remove(user_to_remove)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Removed user with ID: [cyan]{args.user_id}[/cyan]",
+                title="User Removed",
+                border_style="green"
+            ))
         elif args.user_action == 'list':
             display_users()
                 
@@ -150,16 +174,46 @@ def main():
                 title="Project Added",
                 border_style="green"
             ))
+        elif args.project_action == 'remove':
+            project_to_remove = next((p for p in Project.all_projects if p.id == args.project_id), None)
+            if not project_to_remove:
+                console.print(f"[red]Project with ID {args.project_id} not found.[/red]")
+                sys.exit(1)
+            Project.all_projects.remove(project_to_remove)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Removed project with ID: [cyan]{args.project_id}[/cyan]",
+                title="Project Removed",
+                border_style="green"
+            ))
         elif args.project_action == 'list':
             display_projects()
                 
     elif args.command == 'task':
         if args.task_action == 'add':
             task = Task(args.title, args.status, getattr(args, 'assigned_to', None), args.project)
+            if not validate_status(task.status):
+                console.print(f"[red]Invalid task status: {task.status}. Must be one of 'todo', 'in-progress', 'done'.[/red]")
+                sys.exit(1)
             save_to_json()
             console.print(Panel(
                 f"[green]✓[/green] Added task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
                 title="Task Added",
+                border_style="green"
+            ))
+        elif args.task_action == 'remove':
+            task_to_remove = next((t for t in Task.all_tasks if t.id == args.task_id), None)
+            if not task_to_remove:
+                console.print(f"[red]Task with ID {args.task_id} not found.[/red]")
+                sys.exit(1)
+            if not validate_complete_task(task_to_remove):
+                console.print(f"[red]Cannot remove task with ID {args.task_id} as it is not marked 'done'.[/red]")
+                sys.exit(1)
+            Task.all_tasks.remove(task_to_remove)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Removed task with ID: [cyan]{args.task_id}[/cyan]",
+                title="Task Removed",
                 border_style="green"
             ))
         elif args.task_action == 'list':
