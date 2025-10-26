@@ -1,105 +1,63 @@
 # summative-lab-Python-Project-Management-CLI-Tool
 
-The Scenario: Create a Command-Line Project Management Tool 
-You are tasked with creating a command-line project management tool for a team of developers. The tool should allow administrators to manage users, projects, and tasks through structured CLI commands. The system must support:
 
-Creating and listing users via the command line.
-Adding projects to specific users and displaying their associated projects.
-Assigning tasks to projects and marking them as complete.
-Editing and persisting project/task data using file I/O.
-Navigating the tool with clear, user-friendly CLI commands.
-Managing data relationships like one-to-many (users to projects) and many-to-many (projects to tasks with contributors).
-Create and manage users, projects, and tasks.
+Python Management CLI Tool
 
+To begin, make sure the directory is wherever the "summative-lab-Python-Project-Management-CLI-Tool" folder is installed
 
-Task 1: Define the Problem
+CLI commands:
+Begin all CLI commands with: 
 
-Design a CLI tool that enables:
+'python3 main.py' 
 
-Admins to manage users and projects.
-Each user to have one or more projects.
-Each project to have one or more tasks.
-CLI commands to add, view, and update these entities.
-Example CLI Actions
+This will tell the tool to activate the main function (remember to keep spaces between each command)
 
-add-user --name "Alex"
-add-project --user "Alex" --title "CLI Tool"
-add-task --project "CLI Tool" --title "Implement add-task"
+Here's an example command: "python3 main.py task list" This command will display a list of all tasks, along with itentifying information. This will display a table like this:
 
+┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┓
+┃ ID       ┃ Title             ┃ Status      ┃ Assigned To ┃ Project     ┃
+┡━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━┩
+│ task-789 │ Create wireframes │ in_progress │ user-123    │ project-456 │
+└──────────┴───────────────────┴─────────────┴─────────────┴─────────────┘
 
+This is an example of how the tool should look after entering a correct command. If you ever forget what command you need, you can use the "-h" or "--help" command to show you a list of commands in the directory.
+If you ever type a wrong command, read the error message that displays and start over.
 
-Task 2: Determine the Design
-
-Classes: User, Project, Task
-Relationships:
-    One-to-many: User -> Projects
-    One-to-many: Project -> Tasks
-Attributes
-    Users: name, email
-    Projects: title, description, due_date
-    Tasks: title, status, assigned_to
-File Structure
-    main.py: CLI entry point
-    models/: contains class definitions
-    data/: local JSON or CSV file storage
-    utils/: helper functions, custom hooks
-Persistence
-    Use json for saving/loading users, projects, and tasks
-Package Setup:
-    External dependencies listed in requirements.txt
+For your third command (i.e. the third word) you will type one of three commands, depending on which function you need access to.
+    1. user - This will tell the tool to access "User management"
+    2. project - This will tell the tool to access "Project management"
+    3. task - This will tell the tool to access "Task management"
 
 
+User Management
+The User commands are as follows:
+- 'add' (add a User) To add a user, you will need to type the full name of the user, followed by the user's email (both surrounded by quotation marks)
 
-Task 3: Develop the Code
+- remove (remove a User) To remove a user, you will need to type the user ID given to the user when the user was added to the system
 
-Set Up CLI Entry
-    Use argparse to define CLI structure.
-    Implement subcommands like add-user, list-projects, complete-task.
-    Build Object Model
-    Use classes for User, Project, and Task.
-    Apply __init__, instance methods, and relationships.
-    Use class methods to create or retrieve object collections.
-    Implement __str__() or __repr__() for clean CLI output.
-Add OOP Features
-    Use @property and setter methods to control access to attributes.
-    Use class attributes (e.g., ID counters).
-    Add inheritance where appropriate (e.g., Person → User).
-Configure File IO
-    Save and load objects via JSON files.
-    Handle missing files or malformed data with try-except.
-    Use Python scripting best practices (if __name__ == "__main__").
-Use External Packages
-    Install and use at least one PyPi package (e.g., rich, tabulate, typer).
-    Track packages in requirements.txt.
+- list (list all Users) This will display all users in the system
+
+Project Management
+The Project commands are as follows:
+- add (add a Project) To add a project, you will need to type the Title of the project, a short description of the project (both surrounded by quotation marks), and the due date of the project (in YYYY-MM-DD format)
+
+- remove (remove a Project) To remove a project, you will need to type the user ID given to the project when the project was added to the system
+
+- list (list all Projects) This will display all projects in the system
+
+Task Management
+The Task commands are as follows:
+- add (add a Task) To add a task, you will need to type the Title of the task,  (both surrounded by quotation marks)
+
+- remove (remove a Project) To remove a project, you will need to type the user ID given to the project when the project was added to the system
+
+- update-status (update the status of a Task) To update the status of a task, you will need the task_id, followed by one of the following: 'todo', 'in_progress', or 'done'
+
+- assign (assign a User to the Task) To assign a user to the task, you will need the task_id, followed by the user_id
+
+- list (list all Tasks) This will display all tasks in the system
 
 
 
-Task 4: Test and Debug
-
-Add unit tests for your class methods and CLI logic.
-Test input/output interactions using mock data.
-Use print/logging/debugger to trace logic.
-Refactor large files into reusable modules.
 
 
-
-Task 5: Docuument and Maintain
-
-Comment on all class methods and utility functions.
-Create a README.md with:
-    Setup instructions
-    How to run CLI commands
-    Overview of features and known issues
-Ensure all code is pushed to GitHub.
-
-Submission and Grading Criteria
-    Submit a public GitHub repo that includes:
-        Complete source code
-        Data files (JSON or CSV)
-        A README.md with clear instructions
-        Requirements.txt file with dependencies
-        Test files, if applicable
-Review the rubric below as a guide for how this lab will be graded.
-Complete your assignment using your preferred IDE.
-When you are ready, push your final script to GitHub.
-Share the link to your GitHub repo below and submit your assignment.
