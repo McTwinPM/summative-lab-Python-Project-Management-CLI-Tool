@@ -34,6 +34,12 @@ def test_assign_task_to_user():
     task = Task("Test Task", status="todo")
     task.assign_to(user)
     assert task.assignee == user
+
+def test_assign_task_to_project():
+    project = Project("Project for Task", "Testing task assignment", "2024-12-31")
+    task = Task("Test Task", status="todo")
+    task.assign_to_project(project)
+    assert task.project == project
     
 def test_mark_task_complete():
     task = Task("Complete Task", status="done")
