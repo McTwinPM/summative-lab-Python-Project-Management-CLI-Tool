@@ -1,5 +1,6 @@
 import json
 import uuid
+import os
 from datetime import datetime
 
 class User:
@@ -23,6 +24,7 @@ class User:
             User.all_users.remove(self)
 
     @classmethod
+    #Method to load user from dictionary
     def from_dict(cls, data):
         return cls(data['name'], data['email'], data['id'])
     
@@ -68,6 +70,7 @@ class Project:
             Project.all_projects.remove(self)
 
     @classmethod
+    #Method to load project from dictionary
     def from_dict(cls, data):
         project = cls(data['title'], data['description'], data['due_date'], data['id'])
         project.user_ids = data.get('user_ids', [])
@@ -104,8 +107,11 @@ class Task:
         if self in Task.all_tasks:
             Task.all_tasks.remove(self)
 
-    def assign_to(self, user):
+    def assign_to_user(self, user):
         self.assigned_to_id = user.id
+
+    def assign_to_project(self, project):
+        self.project_id = project.id
 
     @property
     def assignee(self):
@@ -116,6 +122,7 @@ class Task:
         return None
 
     @classmethod
+    #Method to load task from dictionary
     def from_dict(cls, data):
         return cls(
             data['title'], 
@@ -143,6 +150,7 @@ def save_to_json(filename='data/objects.json'):
 
 def load_from_json(filename='data/objects.json'):
     try:
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, 'r') as f:
             data = json.load(f)
         

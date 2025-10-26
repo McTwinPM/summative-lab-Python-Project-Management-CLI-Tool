@@ -135,9 +135,14 @@ def main():
     update_task.add_argument('status', help='New status for the task')
 
     # Assign user to task
-    assign_task = task_subparsers.add_parser('assign', help='Assign user to task')
+    assign_task = task_subparsers.add_parser('assign-user', help='Assign user to task')
     assign_task.add_argument('task_id', help='Task ID to assign user to')
     assign_task.add_argument('user_id', help='User ID to assign to task')
+
+    # Assign project to task
+    assign_project = task_subparsers.add_parser('assign-project', help='Assign project to task')
+    assign_project.add_argument('task_id', help='Task ID to assign project to')
+    assign_project.add_argument('project_id', help='Project ID to assign to task')
 
     # List tasks
     task_subparsers.add_parser('list', help='List all tasks')
@@ -201,12 +206,13 @@ def main():
                 
     elif args.command == 'task':
         if args.task_action == 'add':
+            if not validate_status(args.status):
+                console.print(f"[red]Invalid task status: {args.status}. Must be one of 'todo', 'in-progress', 'done'.[/red]")
+                sys.exit(1)
             assigned_to = getattr(args, 'assigned_to', None) 
             project_id = getattr(args, 'project', None)
             task = Task(args.title, args.status, assigned_to, project_id)
-            if not validate_status(task.status):
-                console.print(f"[red]Invalid task status: {task.status}. Must be one of 'todo', 'in-progress', 'done'.[/red]")
-                sys.exit(1)
+            
             save_to_json()
             console.print(Panel(
                 f"[green]✓[/green] Added task: [bold]{task.title}[/bold]\nStatus: [yellow]{task.status}[/yellow]\nID: [cyan]{task.id}[/cyan]",
@@ -228,7 +234,7 @@ def main():
                 title="Task Updated",
                 border_style="green"
             ))
-        elif args.task_action == 'assign':
+        elif args.task_action == 'assign-user':
             task_to_assign = next((t for t in Task.all_tasks if t.id == args.task_id), None)
             if not task_to_assign:
                 console.print(f"[red]Task with ID {args.task_id} not found.[/red]")
@@ -237,10 +243,26 @@ def main():
             if not user_to_assign:
                 console.print(f"[red]User with ID {args.user_id} not found.[/red]")
                 sys.exit(1)
-            task_to_assign.assign_to(user_to_assign)
+            task_to_assign.assign_to_user(user_to_assign)
             save_to_json()
             console.print(Panel(
                 f"[green]✓[/green] Assigned user ID [cyan]{args.user_id}[/cyan] to task ID [cyan]{args.task_id}[/cyan]",
+                title="Task Assigned",
+                border_style="green"
+            ))
+        elif args.task_action == 'assign-project':
+            task_to_assign = next((t for t in Task.all_tasks if t.id == args.task_id), None)
+            if not task_to_assign:
+                console.print(f"[red]Task with ID {args.task_id} not found.[/red]")
+                sys.exit(1)
+            project_to_assign = next((p for p in Project.all_projects if p.id == args.project_id), None)
+            if not project_to_assign:
+                console.print(f"[red]Project with ID {args.project_id} not found.[/red]")
+                sys.exit(1)
+            task_to_assign.assign_to_project(project_to_assign)
+            save_to_json()
+            console.print(Panel(
+                f"[green]✓[/green] Assigned project ID [cyan]{args.project_id}[/cyan] to task ID [cyan]{args.task_id}[/cyan]",
                 title="Task Assigned",
                 border_style="green"
             ))
