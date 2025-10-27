@@ -12,15 +12,9 @@ Begin all CLI commands with:
 
 This will tell the tool to activate the main function (remember to keep spaces between each command)
 
-Here's an example command: "python3 main.py task list" This command will display a list of all tasks, along with itentifying information. This will display a table like this:
+Here's an example command: "python3 main.py task list" This command will display a list of all tasks in the form of a table, along with itentifying information.
 
-┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┓
-┃ ID       ┃ Title             ┃ Status      ┃ Assigned To ┃ Project     ┃
-┡━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━┩
-│ task-789 │ Create wireframes │ in_progress │ user-123    │ project-456 │
-└──────────┴───────────────────┴─────────────┴─────────────┴─────────────┘
-
-This is an example of how the tool should look after entering a correct command. If you ever forget what command you need, you can use the "-h" or "--help" command to show you a list of commands in the directory.
+If you ever forget what command you need, you can use the "-h" or "--help" command to show you a list of commands in the directory.
 If you ever type a wrong command, read the error message that displays and start over.
 
 For your third command (i.e. the third word) you will type one of three commands, depending on which function you need access to.
