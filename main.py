@@ -158,7 +158,7 @@ def main():
             user = User(args.name, args.email)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Added user: [bold]{user.name}[/bold] ({user.email})\nID: [cyan]{user.id}[/cyan]",
+                f"[green]✓[/green] Added user: [bold]{user}[/bold]\nID: [cyan]{user.id}[/cyan]",
                 title="User Added",
                 border_style="green"
             ))
@@ -170,7 +170,7 @@ def main():
             User.all_users.remove(user_to_remove)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Removed user with ID: [cyan]{args.user_id}[/cyan]",
+                f"[green]✓[/green] Removed user: [bold]{user_to_remove}[/bold]",
                 title="User Removed",
                 border_style="green"
             ))
@@ -197,7 +197,7 @@ def main():
             Project.all_projects.remove(project_to_remove)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Removed project with ID: [cyan]{args.project_id}[/cyan]",
+                f"[green]✓[/green] Removed project [bold]{project_to_remove}[/bold]",
                 title="Project Removed",
                 border_style="green"
             ))
@@ -230,7 +230,7 @@ def main():
             task_to_update.status = args.status
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Updated task ID [cyan]{args.task_id}[/cyan] to status: [yellow]{args.status}[/yellow]",
+                f"[green]✓[/green] Updated task:[bold]{task_to_update}[/bold] to status: [yellow]{task_to_update.status}[/yellow]",
                 title="Task Updated",
                 border_style="green"
             ))
@@ -246,7 +246,7 @@ def main():
             task_to_assign.assign_to_user(user_to_assign)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Assigned user ID [cyan]{args.user_id}[/cyan] to task ID [cyan]{args.task_id}[/cyan]",
+                f"[green]✓[/green] Assigned [bold]{task_to_assign}[/bold] to [bold]{user_to_assign}[/bold]",
                 title="Task Assigned",
                 border_style="green"
             ))
@@ -262,7 +262,7 @@ def main():
             task_to_assign.assign_to_project(project_to_assign)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Assigned project ID [cyan]{args.project_id}[/cyan] to task ID [cyan]{args.task_id}[/cyan]",
+                f"[green]✓[/green] Assigned project [bold]{project_to_assign}[/bold] to task [bold]{task_to_assign}[/bold]",
                 title="Task Assigned",
                 border_style="green"
             ))
@@ -277,7 +277,7 @@ def main():
             Task.all_tasks.remove(task_to_remove)
             save_to_json()
             console.print(Panel(
-                f"[green]✓[/green] Removed task with ID: [cyan]{args.task_id}[/cyan]",
+                f"[green]✓[/green] Removed task [bold]{task_to_remove}[/bold]",
                 title="Task Removed",
                 border_style="green"
             ))
